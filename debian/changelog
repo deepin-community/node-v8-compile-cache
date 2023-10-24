@@ -1,5 +1,39 @@
-template-repository (1.0-1) unstable; urgency=medium
+node-v8-compile-cache (2.3.0-3) unstable; urgency=medium
 
-  * Initial release
+  [ Debian Janitor ]
+  * Apply multi-arch hints. + node-v8-compile-cache: Add Multi-Arch: foreign.
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Jelmer Vernooĳ <jelmer@debian.org>  Tue, 22 Nov 2022 12:06:02 +0000
+
+node-v8-compile-cache (2.3.0-2) unstable; urgency=medium
+
+  * Team upload
+
+  [ Jérémy Lal ]
+  * Extend copyright year, remove email to match LICENSE
+
+  [ Yadd ]
+  * Trim trailing whitespace
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse
+  * Add debian/gbp.conf
+  * Declare compliance with policy 4.6.1
+
+ -- Yadd <yadd@debian.org>  Sat, 25 Jun 2022 10:09:56 +0200
+
+node-v8-compile-cache (2.3.0-1) unstable; urgency=medium
+
+  [ Paolo Greppi ]
+  * Initial release (Closes: #897025)
+
+  [ Jérémy Lal ]
+  * New upstream version 2.3.0
+  * watch: update to latest format
+  * Port to dh-sequence-nodejs
+  * AMAU
+  * Standards-Version bump
+  * Add test build-deps
+  * Do not require root
+  * Patch tests to support tap version in debian
+
+ -- Jérémy Lal <kapouer@melix.org>  Sat, 30 Apr 2022 21:10:03 +0200
