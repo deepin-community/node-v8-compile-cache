@@ -1,0 +1,138 @@
+Subject: port to latest tap (t.done -> t.end)
+Author: Jérémy Lal <kapouer@melix.org>
+Last-Update: 2022-04-30
+Forwarded: https://github.com/zertosh/v8-compile-cache/pull/42
+--- a/test/FileSystemBlobStore-test.js
++++ b/test/FileSystemBlobStore-test.js
+@@ -2,7 +2,8 @@
+ 
+ const fs = require('fs');
+ const path = require('path');
+-const rimraf = require('rimraf');
++const { promisify } = require('util');
++const rimraf = promisify(require('rimraf'));
+ const tap = require('tap');
+ const temp = require('temp');
+ 
+@@ -14,15 +15,13 @@
+ let storageDirectory;
+ let blobStore;
+ 
+-tap.beforeEach(cb => {
++tap.beforeEach(() => {
+   storageDirectory = temp.path('filesystemblobstore');
+   blobStore = new FileSystemBlobStore(storageDirectory);
+-  cb();
+ });
+ 
+-tap.afterEach(cb => {
+-  rimraf.sync(storageDirectory);
+-  cb();
++tap.afterEach(() => {
++ return rimraf(storageDirectory);
+ });
+ 
+ tap.test('is empty when the file doesn\'t exist', t => {
+@@ -62,7 +61,7 @@
+   t.same(blobStore.get('foo', 'new-key'), Buffer.from('changed'));
+   t.type(blobStore.get('foo', 'invalidation-key-1'), 'undefined');
+ 
+-  t.done();
++  t.end();
+ });
+ 
+ tap.test('persists both in-memory and previously stored buffers when saved', t => {
+--- a/test/getCacheDir-test.js
++++ b/test/getCacheDir-test.js
+@@ -16,7 +16,7 @@
+   t.match(nameParts[1], /^v8-compile-cache(-\d+)?$/);
+   t.equal(nameParts[2], process.versions.v8);
+ 
+-  t.done();
++  t.end();
+ });
+ 
+ tap.test('getCacheDir (chakracore)', t => {
+@@ -39,7 +39,7 @@
+   t.match(nameParts[1], /^v8-compile-cache(-\d+)?$/);
+   t.equal(nameParts[2], 'chakracore-1.2.3');
+ 
+-  t.done();
++  t.end();
+ });
+ 
+ tap.test('getCacheDir (unknown)', t => {
+@@ -62,7 +62,7 @@
+   t.match(nameParts[1], /^v8-compile-cache(-\d+)?$/);
+   t.equal(nameParts[2], 'node-1.2.3');
+ 
+-  t.done();
++  t.end();
+ });
+ 
+ tap.test('getCacheDir (env)', t => {
+@@ -83,5 +83,5 @@
+ 
+   t.equal(cacheDir, 'from env');
+ 
+-  t.done();
++  t.end();
+ });
+--- a/test/slashEscape-test.js
++++ b/test/slashEscape-test.js
+@@ -19,5 +19,5 @@
+       escapes[key]
+     );
+   }
+-  t.done();
++  t.end();
+ });
+--- a/test/NativeCompileCache-test.js
++++ b/test/NativeCompileCache-test.js
+@@ -17,18 +17,16 @@
+ let fakeCacheStore;
+ let nativeCompileCache;
+ 
+-tap.beforeEach(cb => {
++tap.beforeEach(() => {
+   fakeCacheStore = new FileSystemBlobStore_mock();
+   cachedFiles = fakeCacheStore._cachedFiles;
+   nativeCompileCache = new NativeCompileCache();
+   nativeCompileCache.setCacheStore(fakeCacheStore);
+   nativeCompileCache.install();
+-  cb();
+ });
+ 
+-tap.afterEach(cb => {
++tap.afterEach(() => {
+   nativeCompileCache.uninstall();
+-  cb();
+ });
+ 
+ tap.test('writes and reads from the cache storage when requiring files', t => {
+--- a/test/getMainName-test.js
++++ b/test/getMainName-test.js
+@@ -3,9 +3,8 @@
+ const tap = require('tap');
+ const child_process = require('child_process');
+ 
+-tap.beforeEach(cb => {
++tap.beforeEach(() => {
+   delete process.env.DISABLE_V8_COMPILE_CACHE;
+-  cb();
+ });
+ 
+ tap.test('handles --require', t => {
+--- a/test/module-test.js
++++ b/test/module-test.js
+@@ -4,9 +4,8 @@
+ const tap = require('tap');
+ const semver = require('semver');
+ 
+-tap.beforeEach(cb => {
++tap.beforeEach(() => {
+   delete process.env.DISABLE_V8_COMPILE_CACHE;
+-  cb();
+ });
+ 
+ tap.test('require.resolve.paths module', t => {
